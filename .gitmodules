@@ -131,6 +131,18 @@
 [submodule "roles/dotfiles/files/.vim/pack/bundle/start/scalpel"]
 	path = roles/dotfiles/files/.vim/pack/bundle/start/scalpel
 	url = https://github.com/wincent/scalpel.git
+[submodule "roles/dotfiles/files/.vim/pack/bundle/start/yajs.vim"]
+	path = roles/dotfiles/files/.vim/pack/bundle/start/yajs.vim
+	url = https://github.com/othree/yajs.vim.git
+[submodule "roles/dotfiles/files/.vim/pack/bundle/start/vim-signify"]
+	path = roles/dotfiles/files/.vim/pack/bundle/start/vim-signify
+	url = https://github.com/mhinz/vim-signify.git
+[submodule "roles/dotfiles/files/.vim/pack/bundle/start/es.next.syntax.vim"]
+	path = roles/dotfiles/files/.vim/pack/bundle/start/es.next.syntax.vim
+	url = https://github.com/othree/es.next.syntax.vim.git
+[submodule "roles/dotfiles/files/.vim/pack/bundle/start/syntastic"]
+	path = roles/dotfiles/files/.vim/pack/bundle/start/syntastic
+	url = https://github.com/scrooloose/syntastic.git
 [submodule "vendor/base16-iterm2"]
 	path = vendor/base16-iterm2
 	url = https://github.com/chriskempson/base16-iterm2.git
