@@ -69,6 +69,7 @@
 	excludesfile = ~/.gitignore
 	pager = sh -c "~/.zsh/bin/diff-highlight | less -iFMRSX" -
 	attributesfile = ~/.gitattributes
+	editor = vim
 
 # ignored by Git older than 1.8.2
 [diff]
@@ -121,8 +122,8 @@
 	fetchJobs = 4
 
 [user]
-	email = greg@hurrell.net
-	name = Greg Hurrell
+	email = hieunmce@gmail.com
+	name = HieuNM6
 
 # ignored by Git older than 1.7.10
 [include]
