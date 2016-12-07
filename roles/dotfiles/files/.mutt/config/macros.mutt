@@ -1,0 +1,63 @@
+# Legend:
+#   ! = $spoolfile (INBOX)
+#   > = $mbox (Archive)
+#   ; = <tag-prefix> (operate on tagged messages if possible, or current message if nothi=ng tagged)
+
+macro index,pager gi "<change-folder>!<enter>" "Go to inbox"
+macro index,pager ga "<change-folder>><enter>" "Go to all mail"
+macro index,pager gs "<change-folder>!.Starred<enter>" "Go to starred messages"
+macro index,pager gt "<change-folder>!.Sent<enter>" "Go to Sent Mail"
+macro index,pager gd "<change-folder>!.Drafts<enter>" "Go to drafts"
+macro index,pager gl "<change-folder>?<toggle-mailboxes>" "Go to 'Label'"
+
+# These ones not standard Gmail.
+macro index,pager gh "<change-folder>+Home/Home<enter>" "Go home"
+macro index,pager gw "<change-folder>+Work/Work<enter>" "Go work"
+
+macro pager e "<save-message>><enter><enter><exit>" "Archive"
+macro index e "<tag-prefix-cond><save-message>><enter><enter><end-cond>" "Archive"
+macro pager \# "<save-message>!.Trash<enter><enter><exit>" "Trash"
+macro index \# ";<save-message>!.Trash<enter><enter>" "Trash"
+macro pager ! "<save-message>!.Spam<enter><enter>" "Mark as spam"
+macro index ! ";<save-message>!.Spam<enter><enter>" "Mark as spam"
+
+macro pager s "<flag-message>" "Star/Unstar"
+macro index s ";<flag-message>" "Star/Unstar"
+
+# make this conditional on not being in the inbox already?
+macro index u "<change-folder>!<enter>" "Go to inbox"
+
+macro index x "<tag-message>"
+macro pager x "<tag-message><exit>"
+
+# Select all.
+macro index *a "<tag-pattern>~A<enter>"
+
+# Deselect all (mnemonic: "select [n]one"); for efficiency we only untag tagged.
+macro index *n "<untag-pattern>~T<enter>"
+
+# Select read.
+macro index *r "<untag-pattern>~T<enter><tag-pattern>~R<enter>"
+
+# Select unread.
+macro index *u "<untag-pattern>~T<enter><tag-pattern>~U<enter>"
+
+# Not sure if I want to use space as a "leader" like this...
+macro pager <space>u "|urlview<enter>" "Call urlview to open links"
+
+# [m]ove a mail to another folder (in Gmail, "m" would be "[m]ute").
+macro pager m "<save-message>?<toggle-mailboxes>" "Move to..."
+macro index m ";<save-message>?<toggle-mailboxes>" "Move to..."
+
+macro pager U <set-flag>N "Mark as unread"
+macro index U ";<set-flag>N" "Mark as unread"
+macro pager I <clear-flag>N "Mark as read"
+macro index I ";<clear-flag>N" "Mark as read"
+
+# Macro to toggle alternates (plain <-> html), based on:
+# https://groups.google.com/d/msg/comp.mail.mutt/9I702oMwQQE/JqdLnp3j9WAJ
+macro pager ,@aoh= "<enter-command>unalternative_order *; alternative_order text/html text/plain text/enriched; macro pager A ,@aot= 'toggle alternative order'<enter><exit><display-message>"
+macro pager ,@aot= "<enter-command>unalternative_order *; alternative_order text/plain text/enriched text/html; macro pager A ,@aoh= 'toggle alternative order'<enter><exit><display-message>"
+macro pager A ,@aoh= "toggle alternative order"
+
+macro index S "<enter-command>unset wait_key<enter><shell-escape>~/.mutt/mutt-notmuch-py/mutt-notmuch-py ~/.mail/Temporary/Search<enter><enter-command>mailboxes '+Temporary/Search'<enter><change-folder-readonly>+Temporary/Search<enter>" "search mail (using notmuch)"

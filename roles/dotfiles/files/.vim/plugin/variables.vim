@@ -21,3 +21,5 @@ let g:WincentQuickfixStatusline =
       \ . '%p'
       \ . '%%'
       \ . '%*'
+
+call defer#defer('call variables#init()')

@@ -91,3 +91,14 @@ function! s:get_custom_statusline(action) abort
 
   return 1 " Use default.
 endfunction
+
+function autocmds#idleboot() abort
+  " Make sure we automatically call autocmds#idleboot() only once.
+  augroup WincentIdleboot
+    autocmd!
+  augroup END
+
+  " Make sure we run deferred tasks exactly once.
+  doautocmd User WincentDefer
+  autocmd! User WincentDefer
+endfunction

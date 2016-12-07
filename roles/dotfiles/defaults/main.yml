@@ -4,6 +4,7 @@ dotfiles:
   - .agignore
   - .bash
   - .bash_profile
+  - .clipper.json
   - .emacs.d
   - .ghci
   - .gitattributes
@@ -13,12 +14,18 @@ dotfiles:
   - .gvimrc
   - .hammerspoon
   - .hgrc
+  - .imapfilter
   - .inputrc
+  - .msmtprc
+  - .mutt
+  - .notmuch-config
   - .npmrc
+  - .offlineimaprc
   - .rdebugrc
   - .rspec
   - .screenrc
   - .tmux.conf
+  - .urlview
   - .vim
   - .zsh
   - .zshenv

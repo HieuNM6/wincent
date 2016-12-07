@@ -3,9 +3,27 @@ hs.grid.MARGINX = 0
 hs.grid.MARGINY = 0
 hs.window.animationDuration = 0 -- disable animations
 
+local events = require 'events'
+local eventtap = require 'eventtap'
+local log = require 'log'
+local reloader = require 'reloader'
+
+-- Forward function declarations.
+local activate = nil
+local activateLayout = nil
+local canManageWindow = nil
+local chain = nil
+local handleScreenEvent = nil
+local handleWindowEvent = nil
+local hide = nil
+local initEventHandling = nil
+local internalDisplay = nil
+local isMailMateMailViewer = nil
+local prepareScreencast = nil
+local tearDownEventHandling = nil
+local windowCount = nil
+
 local screenCount = #hs.screen.allScreens()
-local logLevel = 'info' -- generally want 'debug' or 'info'
-local log = hs.logger.new('wincent', logLevel)
 
 local grid = {
   topHalf = '0,0 12x6',
@@ -115,7 +133,7 @@ local layoutConfig = {
 --
 -- (For Chrome, which has two windows per visible window on screen, but only one
 -- window per minimized window).
-function windowCount(app)
+windowCount = (function(app)
   local count = 0
   if app then
     for _, window in pairs(app:allWindows()) do
@@ -125,29 +143,29 @@ function windowCount(app)
     end
   end
   return count
-end
+end)
 
-function hide(bundleID)
+hide = (function(bundleID)
   local app = hs.application.get(bundleID)
   if app then
     app:hide()
   end
-end
+end)
 
-function activate(bundleID)
+activate = (function(bundleID)
   local app = hs.application.get(bundleID)
   if app then
     app:activate()
   end
-end
+end)
 
-function isMailMateMailViewer(window)
+isMailMateMailViewer = (function(window)
   local title = window:title()
   return title == 'No mailbox selected' or
     string.find(title, '%(%d+ messages?%)')
-end
+end)
 
-function canManageWindow(window)
+canManageWindow = (function(window)
   local application = window:application()
   local bundleID = application:bundleID()
 
@@ -155,15 +173,15 @@ function canManageWindow(window)
   -- non-standard.
   return window:isStandard() or
     bundleID == 'com.googlecode.iterm2'
-end
+end)
 
-function internalDisplay()
+internalDisplay = (function()
   -- Fun fact: this resolution matches both the 13" MacBook Air and the 15"
   -- (Retina) MacBook Pro.
   return hs.screen.find('1440x900')
-end
+end)
 
-function activateLayout(forceScreenCount)
+activateLayout = (function(forceScreenCount)
   layoutConfig._before_()
 
   for bundleID, callback in pairs(layoutConfig) do
@@ -179,13 +197,13 @@ function activateLayout(forceScreenCount)
   end
 
   layoutConfig._after_()
-end
+end)
 
 --
 -- Event-handling
 --
 
-function handleWindowEvent(window)
+handleWindowEvent = (function(window)
   if canManageWindow(window) then
     local application = window:application()
     local bundleID = application:bundleID()
@@ -193,12 +211,12 @@ function handleWindowEvent(window)
       layoutConfig[bundleID](window)
     end
   end
-end
+end)
 
 local windowFilter=hs.window.filter.new()
 windowFilter:subscribe(hs.window.filter.windowCreated, handleWindowEvent)
 
-function handleScreenEvent()
+handleScreenEvent = (function()
   -- Make sure that something noteworthy (display count) actually
   -- changed. We no longer check geometry because we were seeing spurious
   -- events.
@@ -207,19 +225,20 @@ function handleScreenEvent()
     screenCount = #screens
     activateLayout(screenCount)
   end
-end
+end)
 
-function initEventHandling()
+initEventHandling = (function()
   screenWatcher = hs.screen.watcher.new(handleScreenEvent)
   screenWatcher:start()
-end
+end)
 
-function tearDownEventHandling()
+tearDownEventHandling = (function()
   screenWatcher:stop()
   screenWatcher = nil
-end
+end)
 
 initEventHandling()
+events.subscribe('reload', tearDownEventHandling)
 
 local lastSeenChain = nil
 local lastSeenWindow = nil
@@ -233,7 +252,7 @@ local lastSeenWindow = nil
 --    one chain to another, or on switching from one app to another, or from one
 --    window to another.
 --
-function chain(movements)
+chain = (function(movements)
   local chainResetInterval = 2 -- seconds
   local cycleLength = #movements
   local sequenceNumber = 1
@@ -261,7 +280,7 @@ function chain(movements)
     hs.grid.set(win, movements[sequenceNumber], screen)
     sequenceNumber = sequenceNumber % cycleLength + 1
   end
-end
+end)
 
 --
 -- Key bindings.
@@ -315,15 +334,24 @@ hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'f2', (function()
 end))
 
 hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'f3', (function()
-  hs.alert('Hammerspoon console')
-  hs.openConsole()
+  hs.console.alpha(.75)
+  hs.toggleConsole()
+end))
+
+hs.hotkey.bind({'ctrl', 'alt', 'cmd'}, 'f4', (function()
+  hs.notify.show(
+    'Hammerspoon',
+    'Reloaded in the background',
+    'Press ⌃⌥⌘F3 to reveal the console.'
+  )
+  reloader.reload()
 end))
 
 --
 -- Screencast layout
 --
 
-function prepareScreencast()
+prepareScreencast = (function()
   local screen = 'Color LCD'
   local top = {x=0, y=0, w=1, h=.92}
   local bottom = {x=.4, y=.82, w=.5, h=.1}
@@ -344,22 +372,12 @@ function prepareScreencast()
     end
   end
   hs.layout.apply(windowLayout)
-end
+end)
 
 -- `open hammerspoon://screencast`
 hs.urlevent.bind('screencast', prepareScreencast)
 
---
--- Auto-reload config on change.
---
+eventtap.init()
+reloader.init()
 
-function reloadConfig(files)
-  for _, file in pairs(files) do
-    if file:sub(-4) == '.lua' then
-      tearDownEventHandling()
-      hs.reload()
-    end
-  end
-end
-
-local pathwatcher = hs.pathwatcher.new(os.getenv('HOME') .. '/.hammerspoon/', reloadConfig):start()
+log.i('Config loaded')

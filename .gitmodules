@@ -4,10 +4,9 @@
 [submodule "roles/dotfiles/files/.vim/pack/bundle/start/YouCompleteMe"]
 	branch = wincent
 	ignore = dirty
-	path = roles/dotfiles/files/.vim/pack/bundle/start/YouCompleteMe
+	path = roles/dotfiles/files/.vim/pack/YouCompleteMe/opt/YouCompleteMe
 	url = https://github.com/wincent/YouCompleteMe.git
 [submodule "roles/dotfiles/files/.vim/pack/bundle/start/base16-vim"]
-	branch = 98aa775c5fd9156ada4f912a9af41f1c020da55d
 	path = roles/dotfiles/files/.vim/pack/bundle/start/base16-vim
 	url = https://github.com/chriskempson/base16-vim.git
 [submodule "roles/dotfiles/files/.vim/pack/bundle/start/command-t"]
@@ -16,6 +15,7 @@
 	path = roles/dotfiles/files/.vim/pack/bundle/start/command-t
 	url = https://github.com/wincent/command-t.git
 [submodule "roles/dotfiles/files/.vim/pack/bundle/start/ferret"]
+	branch = next
 	ignore = untracked
 	path = roles/dotfiles/files/.vim/pack/bundle/start/ferret
 	url = https://github.com/wincent/ferret.git
@@ -29,7 +29,7 @@
 [submodule "roles/dotfiles/files/.vim/pack/bundle/start/nerdtree"]
 	branch = wincent
 	ignore = untracked
-	path = roles/dotfiles/files/.vim/pack/bundle/start/nerdtree
+	path = roles/dotfiles/files/.vim/pack/nerdtree/opt/nerdtree
 	url = https://github.com/wincent/nerdtree.git
 [submodule "roles/dotfiles/files/.vim/pack/bundle/start/pinnacle"]
 	path = roles/dotfiles/files/.vim/pack/bundle/start/pinnacle
@@ -146,3 +146,9 @@
 [submodule "roles/dotfiles/files/.vim/pack/bundle/start/syntastic"]
 	path = roles/dotfiles/files/.vim/pack/bundle/start/syntastic
 	url = https://github.com/scrooloose/syntastic.git
+[submodule "roles/dotfiles/files/.vim/pack/bundle/start/replay"]
+	path = roles/dotfiles/files/.vim/pack/bundle/start/replay
+	url = https://github.com/wincent/replay.git
+[submodule "roles/dotfiles/files/.mutt/mutt-notmuch-py"]
+	path = roles/dotfiles/files/.mutt/mutt-notmuch-py
+	url = https://github.com/honza/mutt-notmuch-py.git
